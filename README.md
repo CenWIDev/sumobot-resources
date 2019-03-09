@@ -17,4 +17,5 @@ Interested in learning more about electronics, arduino, raspberry pi, machine vi
 You can join a team, start a new team of your own, or drop in just to check things out.
 
 Check out the [wiki](https://github.com/CenWIDev/sumobot-resources/wiki) for more resources
+
 Check out our [planning project](https://github.com/CenWIDev/sumobot-resources/projects/1) if you want to help organize or contribute time/resoucres.
