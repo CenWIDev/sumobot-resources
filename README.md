@@ -1,4 +1,4 @@
-## Join the Ultimate Central Wisconsin Sumo Robot challenge!
+## Join the Central Wisconsin _Ultimate Sumo Robot_ challenge!
 
 <img width="50%" alt="Image of sumo bot ring" src="https://raw.githubusercontent.com/CenWIDev/sumobot-resources/master/img/verge_article.JPG">
 
