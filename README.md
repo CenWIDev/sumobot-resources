@@ -1,5 +1,10 @@
 ## Join the Ultimate Central Wisconsin Sumo Robot challenge!
 
+<img width="50%" alt="Image of sumo bot ring" src="https://raw.githubusercontent.com/CenWIDev/sumobot-resources/master/img/verge_article.JPG">
+
+Learn more about robot sumo in this [Verge article](https://www.theverge.com/tldr/2017/6/21/15845032/robot-sumo-wrestling-fast-furious)
+
+
 **June 27, 2019** the competition will be held at the Pfiffner bandshell during the Levitt AMP summer concert series.
 
 Between now and then, the **[IDEA Center](https://www.createportagecounty.org/ideacenter)** will host working nights every other Thursday at 6PM. 
