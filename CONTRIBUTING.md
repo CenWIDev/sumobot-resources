@@ -1,5 +1,8 @@
 Please be considerate and kind. 
 
+Please use issues to discuss things before making a large contribution:
+* https://github.com/CenWIDev/sumobot-resources/issues
+
 You can make contributions to the content directly in the web UI for the README and Wiki, 
 but please make /updates to code via a pull request from a feature branch. 
 * [conceptual overview of feature branching](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow)
