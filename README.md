@@ -11,7 +11,7 @@ Learn more about robot sumo in this [Verge article](https://www.theverge.com/tld
 The competition will be held **June 27, 2019** at the Pfiffner bandshell during the Levitt AMP summer concert series.
 
 Between now and then, the **[IDEA Center](https://www.createportagecounty.org/ideacenter)** will host working nights every other Thursday at 6PM. 
-* March 21 -- Introduction to Arduino night
+* March 21 -- [Introduction to Arduino night](https://codepen.io/daniel-packard/live/Qorxye)
 * April 4
 * April 18
 * May 2
