@@ -12,11 +12,11 @@ The competition will be held **June 27, 2019** at the Pfiffner bandshell during 
 
 Between now and then, the **[IDEA Center](https://www.createportagecounty.org/ideacenter)** will host working nights every other Thursday at 6PM. 
 * March 21 -- [Introduction to Arduino night](https://codepen.io/daniel-packard/live/Qorxye)
-* April 4
-* April 18
-* May 2
-* May 16
-* May 30
+* April 4 -- open lab with arduino and motors
+* April 18  -- ??
+* May 2 -- ??
+* May 16 -- ??
+* May 30 -- ??
 * June 13 -- practice competition
 * June 27 -- THE BIG NIGHT
 
