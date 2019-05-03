@@ -29,7 +29,7 @@ int switchPin = 7;             //switch to turn the robot on and off
 float getDistance()
 {
   float echoTime;                   //variable to store the time it takes for a ping to bounce off an object
-  float calcualtedDistance;         //variable to store the distance calculated from the echo time
+  float calculatedDistance;         //variable to store the distance calculated from the echo time
   
   //send out an ultrasonic pulse that's 10ms long
   digitalWrite(trigPin, HIGH);
@@ -39,9 +39,10 @@ float getDistance()
   echoTime = pulseIn(echoPin, HIGH);      //use the pulsein command to see how long it takes for the
                                           //pulse to bounce back to the sensor
 
-  calcualtedDistance = echoTime / 148.0;  //calculate the distance of the object that reflected the pulse (half the bounce time multiplied by the speed of sound)
+  //calcualtedDistance = echoTime / 148.0;  //calculate the distance of the object that reflected the pulse (half the bounce time multiplied by the speed of sound)
+  calculatedDistance = (echoTime * .034)/2;
   
-  return calcualtedDistance;              //send back the distance that was calculated
+  return calculatedDistance;              //send back the distance that was calculated
 }
 
 //VARIABLES
@@ -93,4 +94,20 @@ void spinMotor(int motorSpeed)                       //function for driving the 
 
   analogWrite(PWMA, abs(motorSpeed));                 //now that the motor direction is set, drive it at the entered speed
   analogWrite(PWMB, abs(motorSpeed));
+}
+
+void backUp()
+{
+
+  int motorSpeed = 255;
+
+  digitalWrite(AIN1, LOW);
+  digitalWrite(AIN2, HIGH);
+  digitalWrite(BIN1, LOW);
+  digitalWrite(BIN2, HIGH);
+
+  analogWrite(PWMA, motorSpeed/1.25);
+  analogWrite(PWMB, motorSpeed);
+  
+
 }
