@@ -6,7 +6,7 @@ typedef enum {
 
 typedef enum {
   SHOULD_RETREAT,
-  BACK_TO_NORMAL,
+  SHOULD_SEARCH,
   NONE
 } Transition;
 
@@ -94,7 +94,7 @@ Transition DetectTransition()
       return NONE;
       break;
     case RETREAT: 
-      return ((t - lastTransition) > timeout) ? BACK_TO_NORMAL : NONE;
+      return ((t - lastTransition) > timeout) ? SHOULD_SEARCH : NONE;
       break;
     default: 
       return NONE;
@@ -110,7 +110,7 @@ State NewState(State s, Transition t)
   lastTransition = millis();
   if(s == SEARCH && t == SHOULD_RETREAT)
     return RETREAT;
-  if(s == RETREAT && t == BACK_TO_NORMAL)
+  if(s == RETREAT && t == SHOULD_SEARCH)
     return SEARCH;
 }
 
