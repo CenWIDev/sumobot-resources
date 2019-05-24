@@ -46,7 +46,14 @@ void setup() {
 
   pinMode(trigPin, OUTPUT);   //the trigger pin will output pulses of electricity 
   pinMode(echoPin, INPUT);    //the echo pin will measure the duration of pulses coming back from the distance sensor
+  //Initialize serial and wait for port to open:
+  Serial.begin(9600);
+  while (!Serial) {
+    ; // wait for serial port to connect. Needed for native USB port only
+  }
 
+  // prints title with ending line break
+  Serial.println("BEGIN");
 }
 
 float getDistance()
@@ -70,6 +77,7 @@ float getDistance()
 
 const float min_dist = 10;
 const unsigned long long timeout = 1000;
+
 Transition DetectTransition()
 {
   float d = getDistance();
@@ -78,6 +86,8 @@ Transition DetectTransition()
   
   switch(currentState) {
     case SEARCH: 
+      Serial.print("testing search: ");
+      Serial.println(d);
       return (d < min_dist) ? SHOULD_RETREAT : NONE;
       break;
     case DESTROY:
@@ -120,11 +130,53 @@ void Act(State s)
   }
 }
 
+void printState(State s)
+{
+  Serial.write("State: ");
+
+  switch(s){
+    case SEARCH:
+        Serial.write("SEARCH\n");
+        break;
+    case RETREAT:
+        Serial.write("RETREAT\n");
+        break;
+    case DESTROY:
+        Serial.write("DESTROY\n");
+        break;
+    default: 
+        Serial.write("UNKNOWN\n");
+        break;
+  }
+}
+
+void printTransition(Transition t)
+{
+  Serial.write("State: ");
+
+  switch(t){
+    case SHOULD_RETREAT:
+        Serial.write("SHOULD_RETREAT\n");
+        break;
+    case BACK_TO_NORMAL:
+        Serial.write("BACK_TO_NORMAL\n");
+        break;
+    case NONE:
+        Serial.write("NONE\n");
+        break;
+    default: 
+        Serial.write("UNKNOWN\n");
+        break;
+  }
+}
+
 void loop() {
   Transition t = DetectTransition();
   currentState = NewState(currentState, t); 
-
+  printState(currentState);
+  printTransition(t);
   Act(currentState);
+  delay(100);
 }
 
 /********************************************************************************/
