@@ -1,12 +1,14 @@
 typedef enum {
   SEARCH,
   DESTROY,
-  RETREAT
+  RETREAT,
+  DEAD
 } State;
 
 typedef enum {
   SHOULD_RETREAT,
   SHOULD_SEARCH,
+  SHOULD_DIE,
   NONE
 } Transition;
 
@@ -25,6 +27,8 @@ const int trigPin = 6;           //connects to the echo pin on the distance sens
 const int echoPin = 5;           //connects to the trigger pin on the distance sensor 
 
 int switchPin = 7;             //switch to turn the robot on and off
+
+const int IRPin = 4;
 
 State currentState;
 unsigned long long lastTransition;
@@ -46,6 +50,9 @@ void setup() {
 
   pinMode(trigPin, OUTPUT);   //the trigger pin will output pulses of electricity 
   pinMode(echoPin, INPUT);    //the echo pin will measure the duration of pulses coming back from the distance sensor
+
+  pinMode(IRPin, INPUT);
+  
   //Initialize serial and wait for port to open:
   Serial.begin(9600);
   while (!Serial) {
@@ -54,6 +61,8 @@ void setup() {
 
   // prints title with ending line break
   Serial.println("BEGIN");
+
+  delay(500);
 }
 
 float getDistance()
@@ -83,6 +92,19 @@ Transition DetectTransition()
   float d = getDistance();
   motorSpeed = (d-10)*20;
   float t = millis();
+
+  
+
+  Serial.write(digitalRead(IRPin));
+
+  if(digitalRead(IRPin) == LOW)
+  {
+
+    return SHOULD_DIE;
+    
+  }
+  else if(currentState == DEAD)
+    return SHOULD_SEARCH;
   
   switch(currentState) {
     case SEARCH: 
@@ -96,6 +118,9 @@ Transition DetectTransition()
     case RETREAT: 
       return ((t - lastTransition) > timeout) ? SHOULD_SEARCH : NONE;
       break;
+    case DEAD:
+      return SHOULD_RETREAT;
+      break;
     default: 
       return NONE;
   }
@@ -107,16 +132,22 @@ State NewState(State s, Transition t)
   if(t == NONE)
     return currentState;
 
+  if(t == SHOULD_DIE)
+    return DEAD;
+
   lastTransition = millis();
   if(s == SEARCH && t == SHOULD_RETREAT)
     return RETREAT;
-  if(s == RETREAT && t == SHOULD_SEARCH)
+  if(t == SHOULD_SEARCH)
     return SEARCH;
 }
 
 void Act(State s) 
 {
   switch(s) {
+    case DEAD:
+      spinMotor(0);
+      break;
     case SEARCH:
       spinMotor(motorSpeed);
       break;
@@ -144,6 +175,9 @@ void printState(State s)
     case DESTROY:
         Serial.write("DESTROY\n");
         break;
+    case DEAD:
+        Serial.write("DEAD\n");
+        break;
     default: 
         Serial.write("UNKNOWN\n");
         break;
@@ -152,17 +186,20 @@ void printState(State s)
 
 void printTransition(Transition t)
 {
-  Serial.write("State: ");
+  Serial.write("Transition: ");
 
   switch(t){
     case SHOULD_RETREAT:
         Serial.write("SHOULD_RETREAT\n");
         break;
-    case BACK_TO_NORMAL:
-        Serial.write("BACK_TO_NORMAL\n");
+    case SHOULD_SEARCH:
+        Serial.write("SHOULD_SEARCH\n");
         break;
     case NONE:
         Serial.write("NONE\n");
+        break;
+    case SHOULD_DIE:
+        Serial.write("SHOULD_DIE\n");
         break;
     default: 
         Serial.write("UNKNOWN\n");
@@ -171,9 +208,9 @@ void printTransition(Transition t)
 }
 
 void loop() {
+  printState(currentState);
   Transition t = DetectTransition();
   currentState = NewState(currentState, t); 
-  printState(currentState);
   printTransition(t);
   Act(currentState);
   delay(100);
