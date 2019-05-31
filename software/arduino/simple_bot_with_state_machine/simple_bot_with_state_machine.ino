@@ -35,6 +35,7 @@ unsigned long long lastTransition;
 int motorSpeed = 0;       //starting speed for the motor
 
 void setup() {
+  
   currentState = SEARCH;
   lastTransition = 0;
   
@@ -65,23 +66,13 @@ void setup() {
   delay(500);
 }
 
-float getDistance()
-{
-  float echoTime;                   //variable to store the time it takes for a ping to bounce off an object
-  float calculatedDistance;         //variable to store the distance calculated from the echo time
-  
-  //send out an ultrasonic pulse that's 10ms long
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10); 
-  digitalWrite(trigPin, LOW);
-
-  echoTime = pulseIn(echoPin, HIGH);      //use the pulsein command to see how long it takes for the
-                                          //pulse to bounce back to the sensor
-
-  //calcualtedDistance = echoTime / 148.0;  //calculate the distance of the object that reflected the pulse (half the bounce time multiplied by the speed of sound)
-  calculatedDistance = (echoTime * .034)/2;
-  
-  return calculatedDistance;              //send back the distance that was calculated
+void loop() {
+  printState(currentState);
+  Transition t = DetectTransition();
+  currentState = NewState(currentState, t); 
+  printTransition(t);
+  Act(currentState);
+  delay(200);
 }
 
 const float min_dist = 10;
@@ -161,6 +152,65 @@ void Act(State s)
   }
 }
 
+/********************************************************************************/
+
+float getDistance()
+{
+  float echoTime;                   //variable to store the time it takes for a ping to bounce off an object
+  float calculatedDistance;         //variable to store the distance calculated from the echo time
+  
+  //send out an ultrasonic pulse that's 10ms long
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10); 
+  digitalWrite(trigPin, LOW);
+
+  echoTime = pulseIn(echoPin, HIGH);      //use the pulsein command to see how long it takes for the
+                                          //pulse to bounce back to the sensor
+
+  //calcualtedDistance = echoTime / 148.0;  //calculate the distance of the object that reflected the pulse (half the bounce time multiplied by the speed of sound)
+  calculatedDistance = (echoTime * .034)/2;
+  
+  return calculatedDistance;              //send back the distance that was calculated
+}
+
+void spinMotor(int motorSpeed)                       //function for driving the right motor
+{
+
+  
+  if (motorSpeed > 0)                                 //if the motor should drive forward (positive speed)
+  {
+    if(motorSpeed > 255) motorSpeed=255;
+    digitalWrite(AIN1, HIGH);                         //set pin 1 to high
+    digitalWrite(AIN2, LOW);                          //set pin 2 to low
+    digitalWrite(BIN1, HIGH);                         //set pin 1 to high
+    digitalWrite(BIN2, LOW);
+  }
+  else                            //if the motor should drive backward (negative speed)
+  {
+    if(motorSpeed < -255) motorSpeed=-255;
+    digitalWrite(AIN1, LOW);                          //set pin 1 to low
+    digitalWrite(AIN2, HIGH);                         //set pin 2 to high
+    digitalWrite(BIN1, LOW);                          //set pin 1 to low
+    digitalWrite(BIN2, HIGH);
+  }
+
+  analogWrite(PWMA, abs(motorSpeed));                 //now that the motor direction is set, drive it at the entered speed
+  analogWrite(PWMB, abs(motorSpeed));
+}
+
+void backUp()
+{
+  int motorSpeed = 255;
+
+  digitalWrite(AIN1, LOW);
+  digitalWrite(AIN2, HIGH);
+  digitalWrite(BIN1, LOW);
+  digitalWrite(BIN2, HIGH);
+
+  analogWrite(PWMA, motorSpeed/1.25);
+  analogWrite(PWMB, motorSpeed);
+}
+
 void printState(State s)
 {
   Serial.write("State: ");
@@ -205,52 +255,4 @@ void printTransition(Transition t)
         Serial.write("UNKNOWN\n");
         break;
   }
-}
-
-void loop() {
-  printState(currentState);
-  Transition t = DetectTransition();
-  currentState = NewState(currentState, t); 
-  printTransition(t);
-  Act(currentState);
-  delay(100);
-}
-
-/********************************************************************************/
-void spinMotor(int motorSpeed)                       //function for driving the right motor
-{
-
-  
-  if (motorSpeed > 0)                                 //if the motor should drive forward (positive speed)
-  {
-    if(motorSpeed > 255) motorSpeed=255;
-    digitalWrite(AIN1, HIGH);                         //set pin 1 to high
-    digitalWrite(AIN2, LOW);                          //set pin 2 to low
-    digitalWrite(BIN1, HIGH);                         //set pin 1 to high
-    digitalWrite(BIN2, LOW);
-  }
-  else                            //if the motor should drive backwar (negative speed)
-  {
-    if(motorSpeed < -255) motorSpeed=-255;
-    digitalWrite(AIN1, LOW);                          //set pin 1 to low
-    digitalWrite(AIN2, HIGH);                         //set pin 2 to high
-    digitalWrite(BIN1, LOW);                          //set pin 1 to low
-    digitalWrite(BIN2, HIGH);
-  }
-
-  analogWrite(PWMA, abs(motorSpeed));                 //now that the motor direction is set, drive it at the entered speed
-  analogWrite(PWMB, abs(motorSpeed));
-}
-
-void backUp()
-{
-  int motorSpeed = 255;
-
-  digitalWrite(AIN1, LOW);
-  digitalWrite(AIN2, HIGH);
-  digitalWrite(BIN1, LOW);
-  digitalWrite(BIN2, HIGH);
-
-  analogWrite(PWMA, motorSpeed/1.25);
-  analogWrite(PWMB, motorSpeed);
 }
