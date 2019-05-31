@@ -1,17 +1,5 @@
-typedef enum {
-  SEARCH,
-  DESTROY,
-  RETREAT,
-  DEAD
-} State;
-
-typedef enum {
-  SHOULD_RETREAT,
-  SHOULD_SEARCH,
-  SHOULD_DIE,
-  NONE
-} Transition;
-
+#include "State.h"
+#include "Transition.h"
 
 //PIN VARIABLES
 //the motor will be controlled by the motor A pins on the motor driver
@@ -35,9 +23,8 @@ unsigned long long lastTransition;
 int motorSpeed = 0;       //starting speed for the motor
 
 void setup() {
-  
   currentState = SEARCH;
-  lastTransition = 0;
+  lastTransition = NONE;
   
   pinMode(switchPin, INPUT_PULLUP);   //set this as a pullup to sense whether the switch is flipped
 
@@ -62,7 +49,6 @@ void setup() {
 
   // prints title with ending line break
   Serial.println("BEGIN");
-
   delay(500);
 }
 
@@ -84,18 +70,12 @@ Transition DetectTransition()
   motorSpeed = (d-10)*20;
   float t = millis();
 
-  
-
   Serial.write(digitalRead(IRPin));
 
   if(digitalRead(IRPin) == LOW)
   {
-
     return SHOULD_DIE;
-    
   }
-  else if(currentState == DEAD)
-    return SHOULD_SEARCH;
   
   switch(currentState) {
     case SEARCH: 
@@ -110,7 +90,7 @@ Transition DetectTransition()
       return ((t - lastTransition) > timeout) ? SHOULD_SEARCH : NONE;
       break;
     case DEAD:
-      return SHOULD_RETREAT;
+      return SHOULD_SEARCH;
       break;
     default: 
       return NONE;
@@ -123,10 +103,10 @@ State NewState(State s, Transition t)
   if(t == NONE)
     return currentState;
 
+  lastTransition = millis();
   if(t == SHOULD_DIE)
     return DEAD;
 
-  lastTransition = millis();
   if(s == SEARCH && t == SHOULD_RETREAT)
     return RETREAT;
   if(t == SHOULD_SEARCH)
@@ -166,7 +146,6 @@ float getDistance()
 
   echoTime = pulseIn(echoPin, HIGH);      //use the pulsein command to see how long it takes for the
                                           //pulse to bounce back to the sensor
-
   //calcualtedDistance = echoTime / 148.0;  //calculate the distance of the object that reflected the pulse (half the bounce time multiplied by the speed of sound)
   calculatedDistance = (echoTime * .034)/2;
   
@@ -209,50 +188,4 @@ void backUp()
 
   analogWrite(PWMA, motorSpeed/1.25);
   analogWrite(PWMB, motorSpeed);
-}
-
-void printState(State s)
-{
-  Serial.write("State: ");
-
-  switch(s){
-    case SEARCH:
-        Serial.write("SEARCH\n");
-        break;
-    case RETREAT:
-        Serial.write("RETREAT\n");
-        break;
-    case DESTROY:
-        Serial.write("DESTROY\n");
-        break;
-    case DEAD:
-        Serial.write("DEAD\n");
-        break;
-    default: 
-        Serial.write("UNKNOWN\n");
-        break;
-  }
-}
-
-void printTransition(Transition t)
-{
-  Serial.write("Transition: ");
-
-  switch(t){
-    case SHOULD_RETREAT:
-        Serial.write("SHOULD_RETREAT\n");
-        break;
-    case SHOULD_SEARCH:
-        Serial.write("SHOULD_SEARCH\n");
-        break;
-    case NONE:
-        Serial.write("NONE\n");
-        break;
-    case SHOULD_DIE:
-        Serial.write("SHOULD_DIE\n");
-        break;
-    default: 
-        Serial.write("UNKNOWN\n");
-        break;
-  }
 }
