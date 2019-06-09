@@ -1,7 +1,7 @@
 typedef enum {
   SHOULD_RETREAT,
   SHOULD_SEARCH,
-  SHOULD_DIE,
+  SHOULD_ATTACK,
   NONE
 } Transition;
 
@@ -16,11 +16,11 @@ void printTransition(Transition t)
     case SHOULD_SEARCH:
         Serial.write("SHOULD_SEARCH\n");
         break;
+    case SHOULD_ATTACK:
+        Serial.write("SHOULD_ATTACK\n");
+        break;
     case NONE:
         Serial.write("NONE\n");
-        break;
-    case SHOULD_DIE:
-        Serial.write("SHOULD_DIE\n");
         break;
     default: 
         Serial.write("UNKNOWN\n");

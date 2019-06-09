@@ -1,8 +1,7 @@
 typedef enum {
   SEARCH,
-  DESTROY,
-  RETREAT,
-  DEAD
+  ATTACK,
+  RETREAT
 } State;
 
 void printState(State s)
@@ -16,11 +15,8 @@ void printState(State s)
     case RETREAT:
         Serial.write("RETREAT\n");
         break;
-    case DESTROY:
-        Serial.write("DESTROY\n");
-        break;
-    case DEAD:
-        Serial.write("DEAD\n");
+    case ATTACK:
+        Serial.write("ATTACK\n");
         break;
     default: 
         Serial.write("UNKNOWN\n");
