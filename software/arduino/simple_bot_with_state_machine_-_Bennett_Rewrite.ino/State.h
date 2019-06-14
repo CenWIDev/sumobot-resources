@@ -1,25 +1,24 @@
-typedef enum {
-  SEARCH,
-  ATTACK,
-  RETREAT
-} State;
+#pragma once
 
-void printState(State s)
-{
-  Serial.write("State: ");
+#include "StateFn.h"
 
-  switch(s){
-    case SEARCH:
-        Serial.write("SEARCH\n");
-        break;
-    case RETREAT:
-        Serial.write("RETREAT\n");
-        break;
-    case ATTACK:
-        Serial.write("ATTACK\n");
-        break;
-    default: 
-        Serial.write("UNKNOWN\n");
-        break;
+class State {
+public:
+  State(String stateName, StateFn f){ 
+    _f = f;
+    _stateName = stateName;
   }
-}
+  ~State(){}
+
+  void Run() {
+    _f();
+  }
+
+  String GetName()  {
+    return _stateName;
+  }
+
+private:
+  StateFn _f;
+  String _stateName;
+};
