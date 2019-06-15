@@ -1,6 +1,8 @@
 #pragma once
+
 #include "Arduino.h"
-#include "StateFn.h"
+
+typedef void (*StateFn)();
 
 class State {
 public:

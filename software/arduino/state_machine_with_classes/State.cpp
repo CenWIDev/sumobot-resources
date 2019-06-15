@@ -1,5 +1,5 @@
 #include "Arduino.h"
-#include "StateFn.h"
+
 #include "State.h"
 
 State::State(String stateName, StateFn f) { 

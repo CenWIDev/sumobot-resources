@@ -1,6 +1,7 @@
 #pragma once
+
 #include "Arduino.h"
-#include "StateFn.h"
+
 #include "State.h"
 
 class StateMachine {

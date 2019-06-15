@@ -3,19 +3,24 @@
 StateMachine sm;
 
 const auto SearchFn = []() {
-  Serial.write("Searching...\n");
+  if(Serial) Serial.write("Searching...\n");
 };
 
 const auto AttackFn =  []() {
-  Serial.write("Attacking...\n");
+  if(Serial) Serial.write("Attacking...\n");
 };
 
 const auto RetreatFn =  []() {
-  Serial.write("Retreating...\n");
+  if(Serial) Serial.write("Retreating...\n");
 };
 
+void ConfigureSerial(int baud) {
+  Serial.begin(baud);
+  while(!Serial) { /* wait until Serial connection is available */ }
+}
+
 void setup() {
-  Serial.begin(9600);
+  ConfigureSerial(9600);
   
   sm.AddState("Search", SearchFn);
   sm.AddState("Attack", AttackFn);
