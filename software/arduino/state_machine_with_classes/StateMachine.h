@@ -1,32 +1,23 @@
 #pragma once
-
+#include "Arduino.h"
 #include "StateFn.h"
 #include "State.h"
 
 class StateMachine {
 public:
-  StateMachine(){}
-  ~StateMachine(){}
+  StateMachine() { }
+
+  ~StateMachine() {
+    ClearStates();
+  }
   
-  void AddState(String stateName, StateFn f) {
-      _states[_nStates] = new State(stateName, f);
-      _nStates++;
-  }
-
-  void SetState(int n){
-    _currentState = _states[n];
-  }
-
-  void Run() {
-    if(!_currentState) 
-      return;
-
-    _currentState->Run();
-  }
+  void AddState(String stateName, StateFn f);
+  void SetState(int n);
+  void ClearStates();
+  void RunCurrentState();
 
 private:
   int _nStates = 0;
   State* _states[3];
   State* _currentState = nullptr;
 };
-
