@@ -4,11 +4,8 @@
 
 class State {
 public:
-  State(String stateName, StateFn f) { 
-    _f = f;
-    _stateName = stateName;
-  }
-  ~State() {}
+  State(String stateName, StateFn f);
+  ~State();
 
   void RunState();
 

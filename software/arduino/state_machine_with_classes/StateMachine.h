@@ -5,11 +5,8 @@
 
 class StateMachine {
 public:
-  StateMachine() { }
-
-  ~StateMachine() {
-    ClearStates();
-  }
+  StateMachine();
+  ~StateMachine();
   
   void AddState(String stateName, StateFn f);
   void SetState(int n);

@@ -3,6 +3,12 @@
 #include "State.h"
 #include "StateMachine.h"
 
+StateMachine::StateMachine() {}
+
+StateMachine::~StateMachine() {
+  ClearStates();
+}
+
 void StateMachine::AddState(String stateName, StateFn f) {
     _states[_nStates] = new State(stateName, f);
     _nStates++;
