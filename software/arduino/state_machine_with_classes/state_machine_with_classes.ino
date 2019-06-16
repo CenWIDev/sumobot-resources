@@ -1,48 +1,54 @@
+#include "Log.h"
 #include "StateMachine.h"
 
 StateMachine sm;
 
 const auto SearchFn = []() {
-  if(Serial) Serial.write("Searching...\n");
+  Log("Searching...");
+  // Todo: search for other bot, e.g. by rotating in place or following a pattern
 };
 
 const auto AttackFn =  []() {
-  if(Serial) Serial.write("Attacking...\n");
+  Log("Attacking...");
+  // Todo: full steam ahead!
 };
 
 const auto RetreatFn =  []() {
-  if(Serial) Serial.write("Retreating...\n");
+  Log("Retreating...");
+  // Todo: backup and turn
 };
 
-void ConfigureSerial(int baud) {
-  Serial.begin(baud);
-  while(!Serial) { /* wait until Serial connection is available */ }
-}
-
 void setup() {
-  ConfigureSerial(9600);
+  //EnableLog(9600);
   
   sm.AddState("Search", SearchFn);
   sm.AddState("Attack", AttackFn);
   sm.AddState("Retreat", RetreatFn);
 
+  sm.AddTransition("Search", "Retreat", [](StateMachine* sm) -> bool {
+    // TODO: detect edge of ring
+  });
+
   sm.AddTransition("Search", "Attack", [](StateMachine* sm) -> bool {
-    return sm->CheckTimeout(500); 
+    // TODO: detect other bot 
+    return sm->CheckTimeout(500);
   });
 
   sm.AddTransition("Attack", "Retreat", [](StateMachine* sm) -> bool {
+    // TODO: detect edge of ring
     return sm->CheckTimeout(200);
   });
 
   sm.AddTransition("Retreat", "Search", [](StateMachine* sm) -> bool {
-    return sm->CheckTimeout(100);
+    return sm->CheckTimeout(250);
   });
 
   sm.SetCurrentState("Search");
 }
 
 void loop() {
-  sm.RunCurrentState();
   auto nextState = sm.GetNextState();
   sm.SetCurrentState(nextState);
+  sm.RunCurrentState();
+  delay(100);
 }
