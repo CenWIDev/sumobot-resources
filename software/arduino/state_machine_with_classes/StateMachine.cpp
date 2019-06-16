@@ -46,6 +46,8 @@ void StateMachine::SetCurrentState(String stateName) {
 void StateMachine::ClearStates() {
   for(int i=0; i<_nStates; i++)
     delete _states[i];
+
+  _nStates = 0;
 }
 
 void StateMachine::RunCurrentState() {
