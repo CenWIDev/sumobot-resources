@@ -25,12 +25,24 @@ void setup() {
   sm.AddState("Search", SearchFn);
   sm.AddState("Attack", AttackFn);
   sm.AddState("Retreat", RetreatFn);
+
+  sm.AddTransition("Search", "Attack", [](StateMachine* sm) -> bool {
+    return sm->CheckTimeout(500); 
+  });
+
+  sm.AddTransition("Attack", "Retreat", [](StateMachine* sm) -> bool {
+    return sm->CheckTimeout(200);
+  });
+
+  sm.AddTransition("Retreat", "Search", [](StateMachine* sm) -> bool {
+    return sm->CheckTimeout(100);
+  });
+
+  sm.SetCurrentState("Search");
 }
 
-int n = 0;
 void loop() {
-  sm.SetState(n);
   sm.RunCurrentState();
-  n = (n+1) %3;
-  delay(500);
+  auto nextState = sm.GetNextState();
+  sm.SetCurrentState(nextState);
 }
