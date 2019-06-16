@@ -39,6 +39,11 @@ void setup() {
     return sm->CheckTimeout(200);
   });
 
+  sm.AddTransition("Attack", "Search", [](StateMachine* sm) -> bool {
+    // TODO: detect when opponent no longer visible
+    return sm->CheckTimeout(200);
+  });
+
   sm.AddTransition("Retreat", "Search", [](StateMachine* sm) -> bool {
     return sm->CheckTimeout(250);
   });
