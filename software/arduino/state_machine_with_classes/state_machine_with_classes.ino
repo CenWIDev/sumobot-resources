@@ -6,42 +6,35 @@ StateMachine sm;
 const auto SearchFn = []() {
   Log("Searching...");
   // Todo: search for other bot, e.g. by rotating in place or following a pattern
+  digitalWrite(LED_BUILTIN, LOW);
 };
 
 const auto AttackFn =  []() {
   Log("Attacking...");
+  digitalWrite(LED_BUILTIN, digitalRead(LED_BUILTIN) == HIGH ? LOW : HIGH);
   // Todo: full steam ahead!
 };
 
 const auto RetreatFn =  []() {
   Log("Retreating...");
+  digitalWrite(LED_BUILTIN, HIGH);
   // Todo: backup and turn
 };
 
 void setup() {
-  //EnableLog(9600);
+  EnableLog(9600);
+  pinMode(LED_BUILTIN, OUTPUT);
   
   sm.AddState("Search", SearchFn);
   sm.AddState("Attack", AttackFn);
   sm.AddState("Retreat", RetreatFn);
 
-  sm.AddTransition("Search", "Retreat", [](StateMachine* sm) -> bool {
-    // TODO: detect edge of ring
-  });
-
   sm.AddTransition("Search", "Attack", [](StateMachine* sm) -> bool {
-    // TODO: detect other bot 
     return sm->CheckTimeout(500);
   });
 
   sm.AddTransition("Attack", "Retreat", [](StateMachine* sm) -> bool {
-    // TODO: detect edge of ring
-    return sm->CheckTimeout(200);
-  });
-
-  sm.AddTransition("Attack", "Search", [](StateMachine* sm) -> bool {
-    // TODO: detect when opponent no longer visible
-    return sm->CheckTimeout(200);
+    return sm->CheckTimeout(500);
   });
 
   sm.AddTransition("Retreat", "Search", [](StateMachine* sm) -> bool {
@@ -55,5 +48,5 @@ void loop() {
   auto nextState = sm.GetNextState();
   sm.SetCurrentState(nextState);
   sm.RunCurrentState();
-  delay(100);
+  delay(20);
 }
