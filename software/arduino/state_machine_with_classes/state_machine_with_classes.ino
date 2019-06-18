@@ -21,30 +21,39 @@ const auto RetreatFn =  []() {
   // Todo: backup and turn
 };
 
-void setup() {
-  EnableLog(9600);
-  pinMode(LED_BUILTIN, OUTPUT);
+void ConfigureStates(StateMachine* sm) {
+  Log("Configuring states...");
+  sm->AddState("Search", SearchFn);
+  sm->AddState("Attack", AttackFn);
+  sm->AddState("Retreat", RetreatFn);
   
-  sm.AddState("Search", SearchFn);
-  sm.AddState("Attack", AttackFn);
-  sm.AddState("Retreat", RetreatFn);
-
-  sm.AddTransition("Search", "Attack", [](StateMachine* sm) -> bool {
+  sm->AddTransition("Search", "Attack", [](StateMachine* sm) -> bool {
     return sm->CheckTimeout(500);
   });
 
-  sm.AddTransition("Attack", "Retreat", [](StateMachine* sm) -> bool {
+  sm->AddTransition("Attack", "Retreat", [](StateMachine* sm) -> bool {
     return sm->CheckTimeout(500);
   });
 
-  sm.AddTransition("Retreat", "Search", [](StateMachine* sm) -> bool {
+  sm->AddTransition("Retreat", "Search", [](StateMachine* sm) -> bool {
     return sm->CheckTimeout(250);
   });
+}
 
+void ConfigurePins() {
+  Log("Configuring pins...");
+  pinMode(LED_BUILTIN, OUTPUT);
+}
+
+void setup() {
+  EnableLog(9600);
+  ConfigurePins();
+  ConfigureStates(&sm);
   sm.SetCurrentState("Search");
 }
 
 void loop() {
+  sm.UpdateData();
   auto nextState = sm.GetNextState();
   sm.SetCurrentState(nextState);
   sm.RunCurrentState();
