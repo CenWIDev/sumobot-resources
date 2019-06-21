@@ -4,6 +4,8 @@
 
 #include "Transition.h"
 
+#define MAX_TRANSITIONS 5
+
 typedef void (*StateFn)();
 
 class State {
@@ -21,5 +23,5 @@ private:
   StateFn _f;
   String _stateName;
   int _numTransitions = 0;
-  Transition* _transitions[3];
+  Transition* _transitions[MAX_TRANSITIONS];
 };

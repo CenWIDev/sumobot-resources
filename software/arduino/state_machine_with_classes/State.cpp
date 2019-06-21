@@ -9,7 +9,6 @@ State::State(String stateName, StateFn f) {
 
 State::~State(){}
 
-
 void State::AddTransition(String to, TransitionFn f) {
   _transitions[_numTransitions] = new Transition(to, f);
   _numTransitions++;
@@ -21,16 +20,16 @@ String State::GetNextState(StateMachine* sm) {
   {
     auto t = _transitions[i];
     if(t->ShouldTransition(sm))
-    {
       return t->To();
-    }
   }
 
+  // if no transitions, next state is the current state
   return _stateName;
 }
 
 void State::RunState() {
-  return _f();
+  if (_f) 
+    _f();
 }
 
 bool State::Is(String stateName){

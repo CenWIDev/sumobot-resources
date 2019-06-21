@@ -4,6 +4,8 @@
 
 #include "State.h"
 
+#define MAX_STATES 5
+
 class StateMachine {
 public:
   StateMachine();
@@ -25,7 +27,7 @@ public:
 
 private:
   int _nStates = 0;
-  State* _states[3];
+  State* _states[MAX_STATES];
   State* _currentState = nullptr;
 
   unsigned long long _stateLastUpdated = 0;

@@ -67,6 +67,10 @@ String StateMachine::GetNextState() {
 
 void StateMachine::AddTransition(String from, String to, TransitionFn f) {
   auto s = GetStateByName(from);
+
+  if(!s)
+    return;
+  
   s->AddTransition(to, f);
 }
 

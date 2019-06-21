@@ -53,9 +53,7 @@ void setup() {
 }
 
 void loop() {
-  sm.UpdateData();
   auto nextState = sm.GetNextState();
   sm.SetCurrentState(nextState);
   sm.RunCurrentState();
-  delay(20);
 }
