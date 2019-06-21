@@ -73,3 +73,7 @@ void StateMachine::AddTransition(String from, String to, TransitionFn f) {
 bool StateMachine::CheckTimeout(int t) {
   return (millis()-_stateLastUpdated) > t;
 }
+
+void StateMachine::UpdateData(){
+
+}

@@ -22,6 +22,7 @@ public:
 
   void AddTransition(String from, String to, TransitionFn f);
   bool CheckTimeout(int t);
+  void UpdateData();
 
 private:
   int _nStates = 0;
