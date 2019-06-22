@@ -26,15 +26,19 @@ void ConfigureStates(StateMachine* sm) {
   sm->AddState("Retreat", RetreatFn);
   
   sm->AddTransition("Search", "Attack", [](StateMachine* sm) -> bool {
-    return sm->CheckTimeout(500);
+    return robot.DetectOpponent();
   });
 
   sm->AddTransition("Attack", "Retreat", [](StateMachine* sm) -> bool {
-    return sm->CheckTimeout(500);
+    return robot.DetectEdge();
+  });
+  
+  sm->AddTransition("Attack", "Search", [](StateMachine* sm) -> bool {
+    return !robot.DetectOpponent();
   });
 
   sm->AddTransition("Retreat", "Search", [](StateMachine* sm) -> bool {
-    return sm->CheckTimeout(250);
+    return sm->TimeoutSinceLastTransition(500);
   });
 }
 

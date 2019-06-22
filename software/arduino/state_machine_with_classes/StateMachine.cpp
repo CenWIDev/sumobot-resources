@@ -74,10 +74,6 @@ void StateMachine::AddTransition(String from, String to, TransitionFn f) {
   s->AddTransition(to, f);
 }
 
-bool StateMachine::CheckTimeout(int t) {
+bool StateMachine::TimeoutSinceLastTransition(int t) {
   return (millis()-_stateLastUpdated) > t;
-}
-
-void StateMachine::UpdateData(){
-
 }

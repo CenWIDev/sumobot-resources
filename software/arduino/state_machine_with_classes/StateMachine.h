@@ -23,8 +23,7 @@ public:
   String GetNextState();
 
   void AddTransition(String from, String to, TransitionFn f);
-  bool CheckTimeout(int t);
-  void UpdateData();
+  bool TimeoutSinceLastTransition(int t);
 
 private:
   int _nStates = 0;
