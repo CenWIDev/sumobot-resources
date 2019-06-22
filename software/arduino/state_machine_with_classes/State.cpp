@@ -14,12 +14,12 @@ void State::AddTransition(String to, TransitionFn f) {
   _numTransitions++;
 }
 
-String State::GetNextState(StateMachine* sm) {
+String State::GetNextState() {
 
   for (int i=0; i<_numTransitions; i++)
   {
     auto t = _transitions[i];
-    if(t->ShouldTransition(sm))
+    if(t->ShouldTransition())
       return t->To();
   }
 

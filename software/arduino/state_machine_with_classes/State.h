@@ -17,7 +17,7 @@ public:
   void RunState();
   bool Is(String stateName);
 
-  String GetNextState(StateMachine* sm);
+  String GetNextState();
 
 private:
   StateFn _f;

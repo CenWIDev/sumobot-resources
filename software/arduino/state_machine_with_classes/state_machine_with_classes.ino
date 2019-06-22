@@ -20,32 +20,32 @@ const auto RetreatFn =  []() {
   robot.SetMotors(-128, -256);
 };
 
-void ConfigureStates(StateMachine* sm) {
-  sm->AddState("Search", SearchFn);
-  sm->AddState("Attack", AttackFn);
-  sm->AddState("Retreat", RetreatFn);
+void ConfigureStates() {
+  sm.AddState("Search", SearchFn);
+  sm.AddState("Attack", AttackFn);
+  sm.AddState("Retreat", RetreatFn);
   
-  sm->AddTransition("Search", "Attack", [](StateMachine* sm) -> bool {
+  sm.AddTransition("Search", "Attack", []() -> bool {
     return robot.DetectOpponent();
   });
 
-  sm->AddTransition("Attack", "Retreat", [](StateMachine* sm) -> bool {
+  sm.AddTransition("Attack", "Retreat", []() -> bool {
     return robot.DetectEdge();
   });
   
-  sm->AddTransition("Attack", "Search", [](StateMachine* sm) -> bool {
+  sm.AddTransition("Attack", "Search", []() -> bool {
     return !robot.DetectOpponent();
   });
 
-  sm->AddTransition("Retreat", "Search", [](StateMachine* sm) -> bool {
-    return sm->TimeoutSinceLastTransition(500);
+  sm.AddTransition("Retreat", "Search", []() -> bool {
+    return sm.TimeoutSinceLastTransition(500);
   });
 }
 
 void setup() {
   EnableLog(9600);
   robot.Initialize();
-  ConfigureStates(&sm);
+  ConfigureStates();
   sm.SetCurrentState("Search");
 
   // wait for 0.5s warmup time

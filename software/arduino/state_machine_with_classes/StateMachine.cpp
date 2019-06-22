@@ -62,7 +62,7 @@ String StateMachine::GetNextState() {
     return "";
   }
 
-  return _currentState->GetNextState(this);
+  return _currentState->GetNextState();
 }
 
 void StateMachine::AddTransition(String from, String to, TransitionFn f) {

@@ -2,15 +2,14 @@
 
 #include "Arduino.h"
 
-class StateMachine;
-typedef bool (*TransitionFn)(StateMachine* sm);
+typedef bool (*TransitionFn)();
 
 class Transition {
 public:
   Transition(String to, TransitionFn f);
   ~Transition();
 
-  bool ShouldTransition(StateMachine* sm);
+  bool ShouldTransition();
   String To();
 
 private:
