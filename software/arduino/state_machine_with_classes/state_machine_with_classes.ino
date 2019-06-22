@@ -1,28 +1,26 @@
 #include "Log.h"
 #include "StateMachine.h"
+#include "Robot.h"
 
 StateMachine sm;
+Robot robot;
 
 const auto SearchFn = []() {
   Log("Searching...");
-  // Todo: search for other bot, e.g. by rotating in place or following a pattern
-  digitalWrite(LED_BUILTIN, LOW);
+  robot.SetMotors(128, -128);
 };
 
 const auto AttackFn =  []() {
   Log("Attacking...");
-  digitalWrite(LED_BUILTIN, digitalRead(LED_BUILTIN) == HIGH ? LOW : HIGH);
-  // Todo: full steam ahead!
+  robot.SetMotors(256, 256);
 };
 
 const auto RetreatFn =  []() {
   Log("Retreating...");
-  digitalWrite(LED_BUILTIN, HIGH);
-  // Todo: backup and turn
+  robot.SetMotors(-128, -256);
 };
 
 void ConfigureStates(StateMachine* sm) {
-  Log("Configuring states...");
   sm->AddState("Search", SearchFn);
   sm->AddState("Attack", AttackFn);
   sm->AddState("Retreat", RetreatFn);
@@ -40,16 +38,14 @@ void ConfigureStates(StateMachine* sm) {
   });
 }
 
-void ConfigurePins() {
-  Log("Configuring pins...");
-  pinMode(LED_BUILTIN, OUTPUT);
-}
-
 void setup() {
   EnableLog(9600);
-  ConfigurePins();
+  robot.Initialize();
   ConfigureStates(&sm);
   sm.SetCurrentState("Search");
+
+  // wait for 0.5s warmup time
+  while ( millis() < 500) {/* no op */} 
 }
 
 void loop() {
