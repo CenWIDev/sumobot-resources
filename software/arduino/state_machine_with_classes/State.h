@@ -19,6 +19,7 @@ public:
   bool Is(String stateName);
 
   String GetNextState();
+  String Name() { return _stateName; }
 
 private:
   StateFn _f;

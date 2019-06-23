@@ -11,15 +11,17 @@ StateMachine::~StateMachine() {
 
 void StateMachine::AddState(String stateName, const StateFn f) {
   if(_nStates >= MAX_STATES) {
-    Log("WARNING: attempting to add more than MAX_STATES to the state machine");
+    Error("Attempting to add more than MAX_STATES to the state machine");
     return;
   }
   
+  Trace("Add state :: " + stateName);
   _states[_nStates] = new State(stateName, f);
   _nStates++;
 }
 
-void StateMachine::SetCurrentState(State* s){
+void StateMachine::SetCurrentState(State* s) {
+  Trace("Set current state :: " + s->Name());
   _currentState = s;
   _stateLastUpdated = millis();
 }
@@ -37,7 +39,7 @@ State* StateMachine::GetStateByName(String stateName) {
 void StateMachine::SetCurrentState(String stateName) {
   if(_currentState && _currentState->Is(stateName))
     return;
-
+    
   SetCurrentState(GetStateByName(stateName));
 }
 
@@ -64,12 +66,19 @@ String StateMachine::GetNextState() {
 }
 
 void StateMachine::AddTransition(String from, String to, TransitionFn f) {
-  auto s = GetStateByName(from);
-
-  if(!s)
-    return;
+  if(from.equals("*"))
+    return AddTransitionToAll(to, f);
   
-  s->AddTransition(to, f);
+  auto s = GetStateByName(from);
+  if(s)
+    s->AddTransition(to, f);
+}
+
+void StateMachine::AddTransitionToAll(String to, TransitionFn f) {
+  for(auto& s : _states) {
+    if(s && !s->Is(to))
+      s->AddTransition(to, f);
+  }
 }
 
 bool StateMachine::TimeoutSinceLastTransition(int t) {

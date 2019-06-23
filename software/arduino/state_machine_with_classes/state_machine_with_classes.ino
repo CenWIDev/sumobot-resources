@@ -5,51 +5,60 @@
 StateMachine sm;
 Robot robot;
 
-const auto SearchFn = []() {
-  Log("Searching...");
-  robot.SetMotors(128, -128);
-};
-
-const auto AttackFn =  []() {
-  Log("Attacking...");
-  robot.SetMotors(256, 256);
-};
-
-const auto RetreatFn =  []() {
-  Log("Retreating...");
-  robot.SetMotors(-128, -256);
-};
-
 void ConfigureStates() {
-  sm.AddState("Search", SearchFn);
-  sm.AddState("Attack", AttackFn);
-  sm.AddState("Retreat", RetreatFn);
+  Info("Configuring State Machine...");
   
-  sm.AddTransition("Search", "Attack", []() -> bool {
-    return robot.DetectOpponent();
+  sm.AddState("Search", []() {
+    robot.SetSpeed(128, -128);
   });
-
-  sm.AddTransition("Attack", "Retreat", []() -> bool {
+  
+  sm.AddState("Attack",  []() {
+    robot.SetSpeed(256, 256);
+  });
+  
+  sm.AddState("Retreat",  []() {
+    robot.SetSpeed(-128, -256);
+  });
+  
+  sm.AddTransition("*", "Retreat", []() -> bool {
+    // if the edge of the arena is detected, transition to the "Retreat" state
     return robot.DetectEdge();
   });
   
+  sm.AddTransition("Search", "Attack", []() -> bool {
+    // If in "Search" state and you detect the opponent, transition to the "Attack" state
+    return robot.DetectOpponent();
+  });
+  
   sm.AddTransition("Attack", "Search", []() -> bool {
+    // if int the "Attack" state, but no longer detect the opponent, transition to the "Search" state
     return !robot.DetectOpponent();
   });
 
   sm.AddTransition("Retreat", "Search", []() -> bool {
-    return sm.TimeoutSinceLastTransition(500);
+    // if in "Retreat" state with timeout AND no longer detect edge, then transition  into "Search" state
+    return sm.TimeoutSinceLastTransition(500) && !robot.DetectEdge();
   });
 }
 
-void setup() {
-  EnableLog(9600);
-  robot.Initialize();
-  ConfigureStates();
-  sm.SetCurrentState("Search");
-
+void countdown() {
   // wait for 0.5s warmup time
-  while ( millis() < 500) {/* no op */} 
+  while ( millis() < 500) {
+    Info("beep...");
+    delay(50);
+  }
+  
+  Info("BEEEEEP");
+}
+
+void setup() {
+  EnableLog(9600, LogLevel::trace);
+
+  ConfigureStates();
+  robot.Initialize();
+  countdown();
+  
+  sm.SetCurrentState("Search");
 }
 
 void loop() {

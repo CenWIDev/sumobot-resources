@@ -20,7 +20,6 @@ public:
   void RunCurrentState();
   String GetNextState();
 
-
   bool TimeoutSinceLastTransition(int t);
 
 private:
@@ -32,4 +31,5 @@ private:
 
   State* GetStateByName(String stateName);
   void SetCurrentState(State* s);
+  void AddTransitionToAll(String to, TransitionFn f);
 };

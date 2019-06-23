@@ -6,7 +6,7 @@ public:
   ~Robot();
 
   void Initialize();
-  void SetMotors(int left, int right);
+  void SetSpeed(int left, int right);
   bool DetectEdge();
   bool DetectOpponent();
 

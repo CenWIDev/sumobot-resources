@@ -1,23 +1,26 @@
 #include "Arduino.h"
+#include "Distance.h"
 #include "Robot.h"
 
 Robot::Robot() {}
 Robot::~Robot() {}
 
 void Robot::Initialize() {
-  // TODO: set pinMode() for all the robot's pins
+  Info("Initializing killer robot...");
+  pinMode(_trigPin, OUTPUT);   //the trigger pin will output pulses of electricity 
+  pinMode(_echoPin, INPUT);
+  pinMode(_irPin, INPUT);
 }
 
-void Robot::SetMotors(const int left, const int right) {
+void Robot::SetSpeed(const int left, const int right) {
+  Trace("Setting motor speeds :: left: " + String(left) + " right: " + String(right));
   // TODO: set those motor speeds
 }
 
 bool Robot::DetectEdge() { 
-  // TODO: detect those edges
-  return true;
+  return digitalRead(_irPin) == LOW;
 }
 
 bool Robot::DetectOpponent() { 
-  // TODO: detect that opponent
-  return true;
+  return getDistance(_trigPin, _echoPin) < 100.0f;
 }
