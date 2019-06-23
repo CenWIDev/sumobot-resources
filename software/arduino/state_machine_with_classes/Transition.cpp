@@ -6,6 +6,8 @@ Transition::Transition(String to, TransitionFn f) {
   _f = f;
 }
 
+Transition::~Transition(){}
+
 bool Transition::ShouldTransition() {
   return _f();
 }

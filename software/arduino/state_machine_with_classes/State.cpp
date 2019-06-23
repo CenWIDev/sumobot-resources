@@ -1,5 +1,5 @@
 #include "Arduino.h"
-
+#include "Log.h"
 #include "State.h"
 
 State::State(String stateName, StateFn f) { 
@@ -7,11 +7,25 @@ State::State(String stateName, StateFn f) {
   _stateName = stateName;
 }
 
-State::~State(){}
+State::~State() { 
+  ClearTransitions();
+}
 
 void State::AddTransition(String to, TransitionFn f) {
+  if(_numTransitions >= MAX_TRANSITIONS) {
+    Log("WARNING: attempting to add more than MAX_TRANSITIONS from a state");
+    return;
+  }
+    
   _transitions[_numTransitions] = new Transition(to, f);
   _numTransitions++;
+}
+
+void State::ClearTransitions() {
+  for(int i=0; i<_numTransitions; i++)
+    delete _transitions[i];
+
+  _numTransitions = 0;
 }
 
 String State::GetNextState() {

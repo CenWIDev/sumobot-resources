@@ -12,17 +12,15 @@ public:
   ~StateMachine();
   
   void AddState(String stateName, StateFn f);
-  void ClearStates();
+  void AddTransition(String from, String to, TransitionFn f);
   
-  State* GetStateByName(String stateName);
-  void SetCurrentState(int n);
+  void ClearStates();
   void SetCurrentState(String n);
-  void SetCurrentState(State* s);
 
   void RunCurrentState();
   String GetNextState();
 
-  void AddTransition(String from, String to, TransitionFn f);
+
   bool TimeoutSinceLastTransition(int t);
 
 private:
@@ -31,4 +29,7 @@ private:
   State* _currentState = nullptr;
 
   unsigned long long _stateLastUpdated = 0;
+
+  State* GetStateByName(String stateName);
+  void SetCurrentState(State* s);
 };

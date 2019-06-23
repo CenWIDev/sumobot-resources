@@ -14,6 +14,7 @@ public:
   ~State();
 
   void AddTransition(String to, TransitionFn f);
+  void ClearTransitions();
   void RunState();
   bool Is(String stateName);
 

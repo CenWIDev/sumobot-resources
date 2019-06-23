@@ -1,5 +1,5 @@
 #include "Arduino.h"
-
+#include "Log.h"
 #include "State.h"
 #include "StateMachine.h"
 
@@ -10,20 +10,18 @@ StateMachine::~StateMachine() {
 }
 
 void StateMachine::AddState(String stateName, const StateFn f) {
-    _states[_nStates] = new State(stateName, f);
-    _nStates++;
+  if(_nStates >= MAX_STATES) {
+    Log("WARNING: attempting to add more than MAX_STATES to the state machine");
+    return;
+  }
+  
+  _states[_nStates] = new State(stateName, f);
+  _nStates++;
 }
 
 void StateMachine::SetCurrentState(State* s){
   _currentState = s;
   _stateLastUpdated = millis();
-}
-
-void StateMachine::SetCurrentState(const int n) {
-  if(n >= _nStates) 
-    return;
-    
-  SetCurrentState(_states[n]);
 }
 
 State* StateMachine::GetStateByName(String stateName) {
