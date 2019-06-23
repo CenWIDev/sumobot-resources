@@ -7,14 +7,55 @@ Robot::~Robot() {}
 
 void Robot::Initialize() {
   Info("Initializing killer robot...");
+  
+  // ultrasonic distance sensor
   pinMode(_trigPin, OUTPUT);   //the trigger pin will output pulses of electricity 
   pinMode(_echoPin, INPUT);
+
+  // IR edge detector
   pinMode(_irPin, INPUT);
+
+  // motors
+  pinMode(_AIN1, OUTPUT);
+  pinMode(_AIN2, OUTPUT);
+  pinMode(_BIN1, OUTPUT);
+  pinMode(_BIN2, OUTPUT);
+  pinMode(_PWMA, OUTPUT);  
+  pinMode(_PWMB, OUTPUT);
 }
 
-void Robot::SetSpeed(const int left, const int right) {
-  Trace("Setting motor speeds :: left: " + String(left) + " right: " + String(right));
-  // TODO: set those motor speeds
+void Robot::SetSpeed(int left, int right) {
+  Info("Setting motor speeds :: left: " + String(left) + " right: " + String(right));
+
+  if (left > 0)                                 //if the motor should drive forward (positive speed)
+  {
+    if(left > 255) left=255;
+    digitalWrite(_AIN1, HIGH);                         //set pin 1 to high
+    digitalWrite(_AIN2, LOW);                          //set pin 2 to low
+  }
+  else                            //if the motor should drive backward (negative speed)
+  {
+    if(left < -255) left=-255;
+    digitalWrite(_AIN1, LOW);                          //set pin 1 to low
+    digitalWrite(_AIN2, HIGH);                         //set pin 2 to high
+  }
+
+  if (right > 0)                                 //if the motor should drive forward (positive speed)
+  {
+    if(right > 255) right=255;
+    digitalWrite(_BIN1, HIGH);
+    digitalWrite(_BIN2, LOW);
+  }
+  else                            //if the motor should drive backward (negative speed)
+  {
+    if(right < -255) right=-255;
+    digitalWrite(_BIN1, LOW);
+    digitalWrite(_BIN2, HIGH);
+  }
+
+  analogWrite(_PWMA, abs(left));                 //now that the motor direction is set, drive it at the entered speed
+  analogWrite(_PWMB, abs(right));
+
 }
 
 bool Robot::DetectEdge() { 

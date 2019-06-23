@@ -9,15 +9,15 @@ void ConfigureStates() {
   Info("Configuring State Machine...");
   
   sm.AddState("Search", []() {
-    robot.SetSpeed(128, -128);
+    robot.SetSpeed(255, -255);
   });
   
   sm.AddState("Attack",  []() {
-    robot.SetSpeed(256, 256);
+    robot.SetSpeed(255, 255);
   });
   
   sm.AddState("Retreat",  []() {
-    robot.SetSpeed(-128, -256);
+    robot.SetSpeed(-128, -255);
   });
   
   sm.AddTransition("*", "Retreat", []() -> bool {
