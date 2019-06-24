@@ -31,12 +31,12 @@ void ConfigureStates() {
   });
   
   sm.AddTransition("Attack", "Search", []() -> bool {
-    // if int the "Attack" state, but no longer detect the opponent, transition to the "Search" state
+    // if in "Attack" state but you no longer detect the opponent, transition to the "Search" state
     return !robot.DetectOpponent();
   });
 
   sm.AddTransition("Retreat", "Search", []() -> bool {
-    // if in "Retreat" state with timeout AND no longer detect edge, then transition  into "Search" state
+    // if in "Retreat" state and you timeout AND no longer detect edge, then transition  into "Search" state
     return sm.TimeoutSinceLastTransition(500) && !robot.DetectEdge();
   });
 }

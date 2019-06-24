@@ -1,4 +1,6 @@
 #include "Arduino.h"
+
+#include "Log.h"
 #include "Distance.h"
 #include "Robot.h"
 
@@ -9,7 +11,7 @@ void Robot::Initialize() {
   Info("Initializing killer robot...");
   
   // ultrasonic distance sensor
-  pinMode(_trigPin, OUTPUT);   //the trigger pin will output pulses of electricity 
+  pinMode(_trigPin, OUTPUT);
   pinMode(_echoPin, INPUT);
 
   // IR edge detector
@@ -27,35 +29,34 @@ void Robot::Initialize() {
 void Robot::SetSpeed(int left, int right) {
   Info("Setting motor speeds :: left: " + String(left) + " right: " + String(right));
 
-  if (left > 0)                                 //if the motor should drive forward (positive speed)
+  if (left > 0)
   {
     if(left > 255) left=255;
-    digitalWrite(_AIN1, HIGH);                         //set pin 1 to high
-    digitalWrite(_AIN2, LOW);                          //set pin 2 to low
+    digitalWrite(_AIN1, HIGH);
+    digitalWrite(_AIN2, LOW);
   }
-  else                            //if the motor should drive backward (negative speed)
+  else
   {
     if(left < -255) left=-255;
-    digitalWrite(_AIN1, LOW);                          //set pin 1 to low
-    digitalWrite(_AIN2, HIGH);                         //set pin 2 to high
+    digitalWrite(_AIN1, LOW);
+    digitalWrite(_AIN2, HIGH);
   }
+  analogWrite(_PWMA, abs(left));
 
-  if (right > 0)                                 //if the motor should drive forward (positive speed)
+  if (right > 0)
   {
     if(right > 255) right=255;
     digitalWrite(_BIN1, HIGH);
     digitalWrite(_BIN2, LOW);
   }
-  else                            //if the motor should drive backward (negative speed)
+  else
   {
     if(right < -255) right=-255;
     digitalWrite(_BIN1, LOW);
     digitalWrite(_BIN2, HIGH);
   }
 
-  analogWrite(_PWMA, abs(left));                 //now that the motor direction is set, drive it at the entered speed
   analogWrite(_PWMB, abs(right));
-
 }
 
 bool Robot::DetectEdge() { 

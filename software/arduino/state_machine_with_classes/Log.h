@@ -33,7 +33,7 @@ static void Trace(String message) {
 }
 
 static void EnableLog(int baud, LogLevel level=LogLevel::info) {
-  log_level=level;
+  log_level = level;
   Serial.begin(baud);
   while(!Serial) { /* wait until Serial connection is available */ }
   

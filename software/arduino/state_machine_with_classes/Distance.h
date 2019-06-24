@@ -3,27 +3,26 @@
 #include "Arduino.h"
 #include "Log.h"
 
-int ultrasonicDelayMs = 50; 
-unsigned long long _distanceLastUpdated = 0;
-float lastDistanceMeasured = 1000.0f;
+const int ultrasonicDelayMs = 50; 
+unsigned long long lastUpdated = 0;
+float cachedDistance = 1000.0f;
+
 float getDistance(int trigPin, int echoPin)
 {
-  if(millis() - _distanceLastUpdated < ultrasonicDelayMs)
-    return lastDistanceMeasured;
-  
-  float echoTime;                   //variable to store the time it takes for a ping to bounce off an object
+  // don't try to update more quickly than the delay... in the meantime, return a cached value.
+  if(millis() - lastUpdated < ultrasonicDelayMs)
+    return cachedDistance;
 
-  //send out an ultrasonic pulse that's 10ms long
+  float echoTime;
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10); 
   digitalWrite(trigPin, LOW);
 
-  echoTime = pulseIn(echoPin, HIGH);      //use the pulsein command to see how long it takes for the
-                                          //pulse to bounce back to the sensor
-  //calcualtedDistance = echoTime / 148.0;  //calculate the distance of the object that reflected the pulse (half the bounce time multiplied by the speed of sound)
-  lastDistanceMeasured = (echoTime * .034)/2;
+  echoTime = pulseIn(echoPin, HIGH);
+  cachedDistance = (echoTime * .034)/2;
 
-  Trace("distance updated :: " + String(lastDistanceMeasured) + "cm");
+  Trace("distance updated :: " + String(cachedDistance) + "cm");
   
-  return lastDistanceMeasured;              //send back the distance that was calculated
+  lastUpdated = millis();
+  return cachedDistance;
 }
