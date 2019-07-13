@@ -27,7 +27,7 @@ void Robot::Initialize() {
 }
 
 void Robot::SetSpeed(int left, int right) {
-  Info("Setting motor speeds :: left: " + String(left) + " right: " + String(right));
+  Trace("Setting motor speeds :: left: " + String(left) + " right: " + String(right));
 
   if (left > 0)
   {

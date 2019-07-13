@@ -4,7 +4,7 @@
 
 #include "Log.h"
 
-const int ultrasonicDelayMs = 50; 
+const int ultrasonicDelayMs = 0; 
 unsigned long long lastUpdated = 0;
 float cachedDistance = 1000.0f;
 
@@ -22,7 +22,7 @@ float getDistance(int trigPin, int echoPin)
   echoTime = pulseIn(echoPin, HIGH);
   cachedDistance = (echoTime * .034)/2;
 
-  Trace("distance updated :: " + String(cachedDistance) + "cm");
+  Info("distance updated :: " + String(cachedDistance) + "cm");
   
   lastUpdated = millis();
   return cachedDistance;
