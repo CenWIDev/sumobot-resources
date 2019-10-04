@@ -9,7 +9,7 @@ void ConfigureStates() {
   Info("Configuring State Machine...");
   
   sm.AddState("Search", []() {
-    robot.SetSpeed(60, -60);
+    robot.SetSpeed(80, -80);
   });
   
   sm.AddState("Attack",  []() {
